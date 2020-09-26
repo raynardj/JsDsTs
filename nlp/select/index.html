@@ -1,0 +1,63 @@
+<head>
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <script src="select.js"></script>
+    <script>
+        
+    </script>
+</head>
+<html>
+    <div class="row">
+        <div class="col-sm-1">
+
+        </div>
+        <div class="col-sm-10 mt-5">
+            <h2 class="text-primary">
+                Selection Test Page
+            </h2>
+            <hr>
+            <div class="mt-5">
+                <h3>Text below</h3>
+                <div id='text-example'>
+                    I must not fear. Fear is the mind-killer. 
+                    <br>
+                    Fear is the little-death that brings total obliteration. 
+                    <br>
+                    I will face my fear. 
+                    <br>
+                    I will permit it to pass over me and through me. 
+                    <br>
+                    And when it has gone past I will turn the inner eye to see its path. 
+                    <br>
+                    Where the fear has gone there will be nothing. Only I will remain.
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <h3 class='bg-warning'>
+                    Js Code
+                </h3>
+                <pre><code id="show_on_page">
+
+                    </code></pre>
+            </div>
+        </div>
+        <div class="col-sm-1">
+            
+        </div>
+    </div>
+    
+</html>
+<script id="on_page">
+    
+    var laud = (text)=>{
+        console.log(text)
+    }
+    var activate_selection = new ActivateSelection("#text-example",[laud,])
+</script>
+<script>
+    var on_page = document.querySelector("#on_page")
+    var show_on_page = document.querySelector("#show_on_page")
+    show_on_page.innerHTML = on_page.innerHTML;
+</script>
