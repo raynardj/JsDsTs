@@ -8,6 +8,11 @@ var selected_text = ()=>{
 }
 
 class ActivateSelection{
+    /*
+    Selection management 
+    Use with callbacks
+    
+    */
     constructor(query_select,callbacks){
         this.dom = document.querySelector(query_select);
         this.callbacks = callbacks;
@@ -36,3 +41,5 @@ class ActivateSelection{
         }
     }
 }
+
+module.export = {ActivateSelection}
