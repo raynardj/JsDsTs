@@ -41,5 +41,3 @@ class ActivateSelection{
         }
     }
 }
-
-module.export = {ActivateSelection}

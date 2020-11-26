@@ -1,0 +1,79 @@
+<head>
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="../select/select.js"></script>
+    <script src="hover_tip.js"></script>
+    <script src=""></script>
+    <style>
+        pre {
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+         }
+    </style>
+</head>
+<html>
+    <div class="row">
+        <div class="col-sm-1">
+
+        </div>
+        <div class="col-sm-10 mt-5">
+            <h2 class="text-primary">
+                Selection Test Page
+            </h2>
+            <hr>
+            <div class="mt-5">
+                <h3>Text below</h3>
+                <pre id='text-example'>Trimethylamine carboxyboranes including their esters and amides were shown to have antineoplastic activity in vivo against Ehrlich ascites carcinoma growth. The derivatization to the ester or amide did not necessarily improve activity. Cytotoxicity of the derivatives was observed against the growth of murine and human tumor cells. Selectivity was demonstrated by the boron derivatives in the human solid tumor screens. Almost all the compounds demonstrated cytotoxicity against single-cell suspension growths, eg Tmolt3, L1210, HeLa-S3. Selection of two compounds to examine their mode of action in L1210 lymphoid leukemia cells showed that the agents perferentially inhibited DNA synthesis followed by protein and RNA synthesis. The d(TTP) pools were markedly reduced because of inhibition of nucleotide kinase activity. The agents also inhibited regulatory enzymes in the de novo purine pathway and afforded DNA strand scission. These effects by the agents were probably additive to bring about tumor cell death.
+                </pre>
+            </div>
+
+            <div class="mt-2">
+                <h3 class='bg-warning'>
+                    Js Code
+                </h3>
+                <pre><code id="show_on_page">
+
+                    </code></pre>
+            </div>
+        </div>
+        <div class="col-sm-1">
+            
+        </div>
+    </div>
+    
+</html>
+<script id="on_page">
+    var activate_modal=(text) => {
+        var tabs = new Tabs(
+            {target_id:"selected_original_text",
+            content:text,
+            label:"Text", is_active:true})
+    
+        var modal = create_modal(
+            {
+                title:"Text Helper",
+                dom_id:"selected_text_helper_modal",
+                body:tabs.everything()
+            })
+    }
+
+    var mutation_api = new APIAsync("")
+    
+    
+    var laud = (text)=>{
+        console.log(text)
+    }
+    var activate_selection = new ActivateSelection("#text-example",[laud,activate_modal])
+</script>
+<script>
+    var on_page = document.querySelector("#on_page")
+    var show_on_page = document.querySelector("#show_on_page")
+    show_on_page.innerHTML = on_page.innerHTML;
+</script>

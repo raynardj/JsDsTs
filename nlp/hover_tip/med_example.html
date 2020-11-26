@@ -1,0 +1,197 @@
+<head>
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="../select/select.js"></script>
+    <script src="hover_tip.js"></script>
+    <script src=""></script>
+    <style>
+        pre {
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+         }
+    </style>
+</head>
+<html>
+    <div class="row">
+        <div class="col-sm-1">
+
+        </div>
+        <div class="col-sm-10 mt-5">
+            <h2 class="text-primary">
+                BioInformatics Reading Helper Demonstration
+            </h2>
+            <hr>
+            <div class="mt-5">
+                <h3>Text below</h3>
+                <pre id='text-example'>Trimethylamine carboxyboranes including their esters and amides were shown to have antineoplastic activity in vivo against Ehrlich ascites carcinoma growth. The derivatization to the ester or amide did not necessarily improve activity. Cytotoxicity of the derivatives was observed against the growth of murine and human tumor cells. Selectivity was demonstrated by the boron derivatives in the human solid tumor screens. Almost all the compounds demonstrated cytotoxicity against single-cell suspension growths, eg Tmolt3, L1210, HeLa-S3. Selection of two compounds to examine their mode of action in L1210 lymphoid leukemia cells showed that the agents perferentially inhibited DNA synthesis followed by protein and RNA synthesis. The d(TTP) pools were markedly reduced because of inhibition of nucleotide kinase activity. The agents also inhibited regulatory enzymes in the de novo purine pathway and afforded DNA strand scission. These effects by the agents were probably additive to bring about tumor cell death.
+
+                The mutations like L858R,V600E and Phe408Ser, 
+                The drugs like Bicalutamide, famitinib and Palbociclib.
+                </pre>
+            </div>
+
+            <div class="mt-2">
+                <h3 class='bg-warning'>
+                    Js Code
+                </h3>
+                <pre><code id="show_on_page">
+
+                    </code></pre>
+            </div>
+        </div>
+        <div class="col-sm-1">
+            
+        </div>
+    </div>
+    
+</html>
+
+<script id="on_page">
+    // configurations
+    var ravenclaw = {
+        endPoint:"http://10.10.10.141:5000"
+    };
+    var aws_lambda = {
+        endPoint:"https://320sncs8vd.execute-api.cn-northwest-1.amazonaws.com.cn/default_state"
+    };
+    var config={
+        ravenclaw,aws_lambda
+    }
+
+    var render_list=(l)=>{
+
+        var ul = ce("ul");
+        ul.className="list-group";
+        
+        for(var i in l){
+            var li = ce("li");
+            li.className="list-group-item";
+            $(li).html(l[i]);
+            $(ul).append(li);
+        }
+        return ul
+    }
+
+    var pretty_json = (data) => {
+        /*
+        print json to pretty bs format
+        */
+        var table = ce("table")
+        table.className="table"
+        for(var k in data){
+            var row = ce("tr")
+            table.append(row)
+            var v = data[k];
+            var th = ce("th"); $(th).html(k);$(row).append(th)
+            var td = ce("td"); $(td).html(String(v));$(row).append(td)
+        }
+        return table
+    }
+
+    var get_drug_detail= async (drug_name, success, fail)=>{
+        var input_data = {
+            "detail-type": "ckb_get_drug",
+            "gnameEN":drug_name
+          }
+        await fetch(aws_lambda.endPoint,{
+            method:"POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify(input_data)
+        })
+        .then(res=>res.json())
+        .then(success)
+        .catch(fail)
+    }
+
+    var append_data_on_dom = (dom) =>{
+        var wrapper = (data) => {
+            console.log("loaded successful", data);
+            $(dom).append(pretty_json(data[0]))
+        }
+        return wrapper
+    }
+
+    var render_drug = (drug_list)=>{
+        var drug_doms = [];
+        for(var i in drug_list){
+            var drug_name = drug_list[i];
+            drug_doms[i] = document.createElement("div")
+            drug_doms[i].id=`${drug_name}_gc_drug_item`
+            $(drug_doms[i]).html(`<h4>Drug:${drug_name}</h4>`)
+            get_drug_detail(
+                drug_name,
+                append_data_on_dom(drug_doms[i]),
+                (e)=>{$(drug_doms[i]).append(e)})
+        }
+        return render_list(drug_doms)
+    }
+
+    // how we manage the selected text in modal
+    var activate_modal=(text) => {
+        var tabs = new Tabs(
+            {target_id:"selected_original_text",
+            content:text,
+            label:"Text", is_active:true},
+            {target_id:"find_mutations_in_text",
+            label:"Mutation"},
+            {target_id:"find_drug_in_text",
+            label:"Drug",},
+            {target_id:"translate_en_to_cn", label:"to_Zh"}
+            )
+    
+        var modal = create_modal(
+            {
+                title:"Text Helper",
+                dom_id:"selected_text_helper_modal",
+                body:tabs.everything()
+            })
+        
+        var get_text_f = ()=>{return {text}};
+        var api_find_mutation = new APIAsync("find_mutations_in_text");
+        window.api_find_mutation = api_find_mutation
+        api_find_mutation.assign_load(
+            ravenclaw.endPoint+"/nlp/find_mutations",
+            get_text_f,
+            function(data){
+                return data.matched_mutations.length?render_list(data.matched_mutations):"No mutation found"}
+            )
+
+        var api_find_drug = new APIAsync("find_drug_in_text");
+        api_find_drug.assign_load(
+            ravenclaw.endPoint+"/nlp/drug",
+            get_text_f,
+            function(data){
+                return data.drugs.length?render_drug(data.drugs):"No drug found"}
+            )
+
+        var api_translate = new APIAsync("translate_en_to_cn");
+        api_translate.assign_load(
+            ravenclaw.endPoint+"/nlp/en_to_cn",
+            get_text_f,
+            (data)=>{
+                return data.translation?data.translation:"Translation API failed"
+            }
+        )
+    }
+    
+    var loud = (text)=>{
+        console.log(text)
+    }
+    var activate_selection = new ActivateSelection(
+        "#text-example",[loud,activate_modal])
+
+</script>
+<script>
+    var on_page = document.querySelector("#on_page")
+    var show_on_page = document.querySelector("#show_on_page")
+    show_on_page.innerHTML = on_page.innerHTML;
+</script>
