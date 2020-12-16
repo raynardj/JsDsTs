@@ -79,6 +79,14 @@
     .append("div")
 
     calc_time(async()=>{
+        df = df.query({ "column": "age", "is": "==", "to": 21 })
+    })("Using Danfo.js filter")
+
+    calc_time(async()=>{
+       data.filter((x)=>{return x==21})
+    })("Using js filter")
+
+    calc_time(async()=>{
         df["age"] = df["age"].apply(x=>x-1)
     })("Using Danfo.js")
 
